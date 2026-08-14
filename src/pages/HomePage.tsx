@@ -100,6 +100,22 @@ export function HomePage(): JSX.Element {
                     Vaciar carrito
                 </button>
             )}
+            {isAuthenticated && (
+                <div>
+                    <Link to="/profile">
+                        Mi cuenta
+                    </Link>
+
+                    {user?.role === "admin" && (
+                        <>
+                            {" | "}
+                            <Link to="/admin">
+                                Panel admin
+                            </Link>
+                        </>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

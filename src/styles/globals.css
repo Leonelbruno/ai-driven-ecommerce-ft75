@@ -1,26 +1,2 @@
 @import "tailwindcss";
-/*Tailwind trae su propio reset */
-@import "theme.css"
-
-@layer base{
-    body{
-
-    }
-
-    img{
-
-    }
-
-    a{
-        
-    }
-
-    ul,
-    ol{
-
-    }
-
-    button{
-        
-    }
-}
+@import "./theme.css";

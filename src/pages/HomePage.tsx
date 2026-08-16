@@ -1,8 +1,10 @@
-import type { JSX } from "react";
+import { useState, type JSX } from "react";
 import { Link } from "react-router";
+
 import { useAuth } from "../hooks/useAuth";
 import { useProducts } from "../hooks/useProducts";
 import { useCart } from "../hooks/useCart";
+import { useDebounce } from "../hooks/useDebounce";
 
 export function HomePage(): JSX.Element {
     const {
@@ -12,12 +14,53 @@ export function HomePage(): JSX.Element {
         logout,
     } = useAuth();
 
-    const { products, loading, error } = useProducts();
-    const { items, addItem, removeItem, clearCart } = useCart();
+    const {
+        products,
+        loading,
+        error,
+    } = useProducts();
+
+    const {
+        items,
+        addItem,
+        removeItem,
+        clearCart,
+    } = useCart();
+
+    // Búsqueda y categoría seleccionada
+    const [search, setSearch] = useState("");
+    const [category, setCategory] = useState("all");
+
+    // Espera 300ms después de que el usuario deja de escribir
+    const debouncedSearch = useDebounce(search, 300);
+
+    // Obtiene las categorías existentes de los productos
+    const categories = [
+        ...new Set(
+            products.map((product) => product.categoryId)
+        ),
+    ];
+
+    // Filtra productos por nombre y categoría
+    const filteredProducts = products.filter(
+        (product) => {
+            const matchesSearch = product.name
+                .toLowerCase()
+                .includes(debouncedSearch.toLowerCase());
+
+            const matchesCategory =
+                category === "all" ||
+                product.categoryId === category;
+
+            return matchesSearch && matchesCategory;
+        }
+    );
 
     return (
         <div style={{ padding: "2rem" }}>
             <h1>HENRY-Commerce</h1>
+
+            {/* AUTENTICACIÓN */}
 
             {authLoading ? (
                 <p>Comprobando sesión...</p>
@@ -38,9 +81,15 @@ export function HomePage(): JSX.Element {
 
                     {!isAuthenticated && (
                         <div>
-                            <Link to="/login">Iniciar sesión</Link>
+                            <Link to="/login">
+                                Iniciar sesión
+                            </Link>
+
                             {" | "}
-                            <Link to="/register">Registrarse</Link>
+
+                            <Link to="/register">
+                                Registrarse
+                            </Link>
                         </div>
                     )}
 
@@ -54,24 +103,98 @@ export function HomePage(): JSX.Element {
 
             <hr />
 
+            {/* CATÁLOGO */}
+
             <h2>Productos</h2>
 
-            {loading && <p>Cargando productos...</p>}
-            {error && <p>{error}</p>}
+            <div>
+                <label htmlFor="search">
+                    Buscar producto
+                </label>
 
-            {!loading && !error && (
-                <ul>
-                    {products.map((product) => (
-                        <li key={product.id}>
-                            {product.name} - ${product.price}
+                <input
+                    id="search"
+                    type="search"
+                    placeholder="Buscar..."
+                    value={search}
+                    onChange={(event) =>
+                        setSearch(event.target.value)
+                    }
+                />
+            </div>
 
-                            <button onClick={() => addItem(product)}>
-                                Agregar al carrito
-                            </button>
-                        </li>
+            <div>
+                <label htmlFor="category">
+                    Categoría
+                </label>
+
+                <select
+                    id="category"
+                    value={category}
+                    onChange={(event) =>
+                        setCategory(event.target.value)
+                    }
+                >
+                    <option value="all">
+                        Todas
+                    </option>
+
+                    {categories.map((categoryName) => (
+                        <option
+                            key={categoryName}
+                            value={categoryName}
+                        >
+                            {categoryName}
+                        </option>
                     ))}
-                </ul>
+                </select>
+            </div>
+
+            {/* ESTADOS DEL CATÁLOGO */}
+
+            {loading && (
+                <p>Cargando productos...</p>
             )}
+
+            {error && (
+                <p>{error}</p>
+            )}
+
+            {!loading &&
+                !error &&
+                filteredProducts.length === 0 && (
+                    <p>
+                        No se encontraron productos.
+                    </p>
+                )}
+
+            {!loading &&
+                !error &&
+                filteredProducts.length > 0 && (
+                    <ul>
+                        {filteredProducts.map((product) => (
+                            <li key={product.id}>
+                                {product.name} - ${product.price}
+
+                                {" "}
+
+                                <Link to={`/product/${product.id}`}>
+                                    Ver detalle
+                                </Link>
+
+                                {" "}
+
+                                <button
+                                    onClick={() => addItem(product)}
+                                >
+                                    Agregar al carrito
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+
+            {/* CARRITO */}
 
             <h2>Carrito</h2>
 
@@ -81,7 +204,8 @@ export function HomePage(): JSX.Element {
                 <ul>
                     {items.map((item) => (
                         <li key={item.product.id}>
-                            {item.product.name} x {item.quantity}
+                            {item.product.name} x{" "}
+                            {item.quantity}
 
                             <button
                                 onClick={() =>
@@ -100,6 +224,9 @@ export function HomePage(): JSX.Element {
                     Vaciar carrito
                 </button>
             )}
+
+            {/* NAVEGACIÓN DEL USUARIO */}
+
             {isAuthenticated && (
                 <div>
                     <Link to="/profile">
@@ -109,6 +236,7 @@ export function HomePage(): JSX.Element {
                     {user?.role === "admin" && (
                         <>
                             {" | "}
+
                             <Link to="/admin">
                                 Panel admin
                             </Link>

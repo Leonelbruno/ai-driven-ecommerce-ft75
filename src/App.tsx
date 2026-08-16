@@ -6,6 +6,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AdminRoute } from "./components/AdminRoute";
 import { ProfilePage } from "./pages/ProfilePage";
 import { AdminPage } from "./pages/AdminPage";
+import { ProductDetailPage } from "./pages/ProductDetailPage";
 
 function App() {
   return (
@@ -38,6 +39,11 @@ function App() {
             <AdminPage />
           </AdminRoute>
         }
+      />
+
+      <Route
+        path="/product/:productId"
+        element={<ProductDetailPage />}
       />
     </Routes>
   );

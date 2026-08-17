@@ -11,6 +11,7 @@ import { CartPage } from "./pages/CartPage";
 import { CheckoutPage } from "./pages/CheckoutPage";
 import { OrderSuccessPage } from "./pages/OrderSuccessPage";
 import { OrdersPage } from "./pages/OrdersPage";
+import { AdminOrdersPage } from "./pages/AdminOrdersPage";
 
 function App() {
   return (
@@ -76,6 +77,14 @@ function App() {
           <ProtectedRoute>
             <OrdersPage />
           </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/orders"
+        element={
+          <AdminRoute>
+            <AdminOrdersPage />
+          </AdminRoute>
         }
       />
     </Routes>

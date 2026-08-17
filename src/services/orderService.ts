@@ -1,15 +1,7 @@
-import {
-    addDoc,
-    collection,
-    getDocs,
-    query,
-    serverTimestamp,
-    where,
-} from "firebase/firestore";
-
+import { addDoc, collection, doc, getDocs, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
 import { db } from "../config/firebase";
 import type { CartItem } from "../types/CartItem";
-import type { Order } from "../types/Order";
+import type { Order, OrderStatus } from "../types/Order";
 
 export async function createOrder(
     userId: string,
@@ -69,4 +61,45 @@ export async function getUserOrders(
             b.createdAt.getTime() -
             a.createdAt.getTime()
     );
+}
+
+export async function getAllOrders(): Promise<Order[]> {
+    const snapshot = await getDocs(
+        collection(db, "orders")
+    );
+
+    const orders = snapshot.docs.map((document) => {
+        const data = document.data();
+
+        return {
+            id: document.id,
+            userId: data.userId,
+            items: data.items,
+            total: data.total,
+            status: data.status,
+            createdAt:
+                data.createdAt?.toDate?.() ?? new Date(),
+        } as Order;
+    });
+
+    return orders.sort(
+        (a, b) =>
+            b.createdAt.getTime() -
+            a.createdAt.getTime()
+    );
+}
+
+export async function updateOrderStatus(
+    orderId: string,
+    status: OrderStatus
+) {
+    const orderRef = doc(
+        db,
+        "orders",
+        orderId
+    );
+
+    await updateDoc(orderRef, {
+        status,
+    });
 }

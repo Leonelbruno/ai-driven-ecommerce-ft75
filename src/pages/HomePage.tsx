@@ -56,6 +56,11 @@ export function HomePage(): JSX.Element {
         }
     );
 
+    const cartCount = items.reduce(
+        (total, item) => total + item.quantity,
+        0
+    );
+
     return (
         <div style={{ padding: "2rem" }}>
             <h1>HENRY-Commerce</h1>
@@ -198,6 +203,9 @@ export function HomePage(): JSX.Element {
 
             <h2>Carrito</h2>
 
+            <Link to="/cart">
+                Ver carrito ({cartCount})
+            </Link>
             {items.length === 0 ? (
                 <p>El carrito está vacío</p>
             ) : (

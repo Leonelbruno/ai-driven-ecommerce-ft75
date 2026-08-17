@@ -10,7 +10,11 @@ export function ProfilePage() {
 
             <p>Email: {user?.email}</p>
             <p>Rol: {user?.role}</p>
-
+            <p>
+                <Link to="/orders">
+                    Mis pedidos
+                </Link>
+            </p>
             <Link to="/">
                 Volver al inicio
             </Link>

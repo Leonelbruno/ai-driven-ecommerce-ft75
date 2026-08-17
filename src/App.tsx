@@ -7,6 +7,10 @@ import { AdminRoute } from "./components/AdminRoute";
 import { ProfilePage } from "./pages/ProfilePage";
 import { AdminPage } from "./pages/AdminPage";
 import { ProductDetailPage } from "./pages/ProductDetailPage";
+import { CartPage } from "./pages/CartPage";
+import { CheckoutPage } from "./pages/CheckoutPage";
+import { OrderSuccessPage } from "./pages/OrderSuccessPage";
+import { OrdersPage } from "./pages/OrdersPage";
 
 function App() {
   return (
@@ -44,6 +48,35 @@ function App() {
       <Route
         path="/product/:productId"
         element={<ProductDetailPage />}
+      />
+      <Route
+        path="/cart"
+        element={<CartPage />}
+      />
+      <Route
+        path="/checkout"
+        element={
+          <ProtectedRoute>
+            <CheckoutPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/orders/:orderId/success"
+        element={
+          <ProtectedRoute>
+            <OrderSuccessPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/orders"
+        element={
+          <ProtectedRoute>
+            <OrdersPage />
+          </ProtectedRoute>
+        }
       />
     </Routes>
   );

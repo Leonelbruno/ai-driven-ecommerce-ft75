@@ -24,7 +24,12 @@ export type CartAction =
     }
     | {
         type: "CLEAR_CART";
+    }
+    | {
+        type: "SET_ITEMS";
+        items: CartItem[]
     };
+
 
 // 4. Estado inicial
 export const initialCartState: CartState = {
@@ -49,7 +54,10 @@ export function cartReducer(
                         item.product.id === action.product.id
                             ? {
                                 ...item,
-                                quantity: item.quantity + 1,
+                                quantity: Math.min(
+                                    item.quantity + 1,
+                                    item.product.stock
+                                ),
                             }
                             : item
                     ),
@@ -79,29 +87,37 @@ export function cartReducer(
         }
 
         case "UPDATE_QUANTITY": {
-            if (action.quantity < 1) {
-                return state;
-            }
+            if (action.quantity < 1) return state;
 
             return {
                 ...state,
-                items: state.items.map((item) =>
-                    item.product.id === action.productId
-                        ? {
-                            ...item,
-                            quantity: action.quantity,
-                        }
-                        : item
-                ),
+                items: state.items.map((item) => {
+                    if (item.product.id !== action.productId) {
+                        return item;
+                    }
+
+                    const newQuantity = Math.min(
+                        action.quantity,
+                        item.product.stock
+                    );
+
+                    return {
+                        ...item,
+                        quantity: newQuantity,
+                    };
+                }),
             };
         }
-
         case "CLEAR_CART": {
             return {
                 items: [],
             };
         }
-
+        case "SET_ITEMS": {
+            return {
+                items: action.items,
+            };
+        }
         default:
             return state;
     }

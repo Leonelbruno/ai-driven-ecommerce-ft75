@@ -179,9 +179,17 @@ export function HomePage(): JSX.Element {
                     <ul>
                         {filteredProducts.map((product) => (
                             <li key={product.id}>
-                                {product.name} - ${product.price}
+                                {product.imageUrl && (
+                                    <img
+                                        src={product.imageUrl}
+                                        alt={product.name}
+                                        width="150"
+                                    />
+                                )}
 
-                                {" "}
+                                <p>
+                                    {product.name} - ${product.price}
+                                </p>
 
                                 <Link to={`/product/${product.id}`}>
                                     Ver detalle

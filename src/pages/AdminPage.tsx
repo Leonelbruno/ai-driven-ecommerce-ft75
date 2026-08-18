@@ -38,6 +38,8 @@ export function AdminPage() {
             undefined
         );
 
+    const [saving, setSaving] = useState(false);
+
     const loadProducts = async () => {
         try {
             setLoading(true);
@@ -75,14 +77,13 @@ export function AdminPage() {
         event.preventDefault();
 
         try {
+            setSaving(true);
             setError("");
 
             let imageUrl = currentImageUrl;
 
             if (imageFile) {
-                imageUrl = await uploadProductImage(
-                    imageFile
-                );
+                imageUrl = await uploadProductImage(imageFile);
             }
 
             const productData = {
@@ -91,34 +92,22 @@ export function AdminPage() {
                 price: Number(price),
                 categoryId,
                 stock: Number(stock),
-
-                ...(imageUrl
-                    ? { imageUrl }
-                    : {}),
+                ...(imageUrl ? { imageUrl } : {}),
             };
 
             if (editingId) {
-                await updateProduct(
-                    editingId,
-                    productData
-                );
+                await updateProduct(editingId, productData);
             } else {
-                await createProduct(
-                    productData
-                );
+                await createProduct(productData);
             }
 
             resetForm();
             await loadProducts();
         } catch (error) {
-            console.error(
-                "Error al guardar producto:",
-                error
-            );
-
-            setError(
-                "No se pudo guardar el producto"
-            );
+            console.error(error);
+            setError("No se pudo guardar el producto");
+        } finally {
+            setSaving(false);
         }
     };
 
@@ -352,11 +341,20 @@ export function AdminPage() {
 
                         <button
                             type="submit"
-                            className="w-full rounded-lg bg-[var(--charcoal-blue)] px-4 py-3 font-bold text-white hover:bg-[var(--dark-slate-grey)]"
+                            disabled={saving}
+                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--charcoal-blue)] px-4 py-3 font-bold text-white hover:bg-[var(--dark-slate-grey)] disabled:cursor-not-allowed disabled:opacity-60"
                         >
-                            {editingId
-                                ? "Guardar cambios"
-                                : "Crear producto"}
+                            {saving && (
+                                <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                            )}
+
+                            {saving
+                                ? editingId
+                                    ? "Actualizando producto..."
+                                    : "Agregando producto..."
+                                : editingId
+                                    ? "Guardar cambios"
+                                    : "Crear producto"}
                         </button>
 
                         {editingId && (

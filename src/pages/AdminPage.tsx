@@ -163,195 +163,315 @@ export function AdminPage() {
     };
 
     return (
-        <main style={{ padding: "2rem" }}>
-            <h1>Panel de administración</h1>
+        <main className="min-h-screen bg-slate-100">
+            {/* HEADER ADMIN */}
 
-            <Link to="/">
-                ← Volver al catálogo
-            </Link>
-            <p>
-                <Link to="/admin/orders">
-                    Administrar órdenes
-                </Link>
-            </p>
-
-            <h2>
-                {editingId
-                    ? "Editar producto"
-                    : "Nuevo producto"}
-            </h2>
-
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>
-                        Nombre
-                        <input
-                            value={name}
-                            onChange={(event) =>
-                                setName(event.target.value)
-                            }
-                            required
-                        />
-                    </label>
-                </div>
-
-                <div>
-                    <label>
-                        Descripción
-                        <input
-                            value={description}
-                            onChange={(event) =>
-                                setDescription(
-                                    event.target.value
-                                )
-                            }
-                            required
-                        />
-                    </label>
-                </div>
-
-                <div>
-                    <label>
-                        Precio
-                        <input
-                            type="number"
-                            min="0"
-                            value={price}
-                            onChange={(event) =>
-                                setPrice(event.target.value)
-                            }
-                            required
-                        />
-                    </label>
-                </div>
-
-                <div>
-                    <label>
-                        Categoría
-                        <input
-                            value={categoryId}
-                            onChange={(event) =>
-                                setCategoryId(
-                                    event.target.value
-                                )
-                            }
-                            required
-                        />
-                    </label>
-                </div>
-
-                <div>
-                    <label>
-                        Stock
-                        <input
-                            type="number"
-                            min="0"
-                            value={stock}
-                            onChange={(event) =>
-                                setStock(event.target.value)
-                            }
-                            required
-                        />
-                    </label>
-                </div>
-
-                {error && <p>{error}</p>}
-                <div>
-                    <label>
-                        Imagen
-
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(event) =>
-                                setImageFile(
-                                    event.target.files?.[0] ??
-                                    null
-                                )
-                            }
-                        />
-                    </label>
-                </div>
-
-                {imageFile && (
-                    <p>
-                        Imagen seleccionada:{" "}
-                        {imageFile.name}
-                    </p>
-                )}
-
-                {currentImageUrl && (
+            <header className="bg-[var(--charcoal-blue)] text-white shadow-md">
+                <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-5 sm:px-6 lg:px-8">
                     <div>
-                        <p>Imagen actual:</p>
+                        <p className="text-sm font-semibold text-[var(--tea-green)]">
+                            PATAGONIX TECH
+                        </p>
 
-                        <img
-                            src={currentImageUrl}
-                            alt="Producto actual"
-                            width="150"
-                        />
+                        <h1 className="text-2xl font-black">
+                            Panel de administración
+                        </h1>
                     </div>
-                )}
-                <button type="submit">
-                    {editingId
-                        ? "Guardar cambios"
-                        : "Crear producto"}
-                </button>
 
-                {editingId && (
-                    <button
-                        type="button"
-                        onClick={resetForm}
+                    <nav className="flex flex-wrap gap-3">
+                        <Link
+                            to="/admin/orders"
+                            className="rounded-lg bg-white/10 px-4 py-2 font-semibold hover:bg-white/20"
+                        >
+                            Gestionar pedidos
+                        </Link>
+
+                        <Link
+                            to="/"
+                            className="rounded-lg bg-[var(--tea-green)] px-4 py-2 font-bold text-[var(--charcoal-blue)]"
+                        >
+                            Ver tienda
+                        </Link>
+                    </nav>
+                </div>
+            </header>
+
+            <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[380px_1fr] lg:px-8">
+
+                {/* FORMULARIO */}
+
+                <section className="h-fit rounded-2xl bg-white p-6 shadow-sm">
+                    <h2 className="text-xl font-black text-[var(--charcoal-blue)]">
+                        {editingId
+                            ? "Editar producto"
+                            : "Nuevo producto"}
+                    </h2>
+
+                    <p className="mt-1 text-sm text-gray-500">
+                        {editingId
+                            ? "Modificá los datos del producto seleccionado."
+                            : "Agregá un producto al catálogo."}
+                    </p>
+
+                    <form
+                        onSubmit={handleSubmit}
+                        className="mt-6 space-y-4"
                     >
-                        Cancelar edición
-                    </button>
-                )}
-            </form>
+                        <div>
+                            <label className="mb-1 block text-sm font-semibold text-gray-700">
+                                Nombre
+                            </label>
 
-            <hr />
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(event) =>
+                                    setName(event.target.value)
+                                }
+                                required
+                                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-[var(--pacific-cyan)] focus:ring-2 focus:ring-[var(--tea-green)]"
+                            />
+                        </div>
 
-            <h2>Productos existentes</h2>
+                        <div>
+                            <label className="mb-1 block text-sm font-semibold text-gray-700">
+                                Descripción
+                            </label>
 
-            {loading && (
-                <p>Cargando productos...</p>
-            )}
+                            <textarea
+                                value={description}
+                                onChange={(event) =>
+                                    setDescription(
+                                        event.target.value
+                                    )
+                                }
+                                required
+                                rows={3}
+                                className="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-[var(--pacific-cyan)]"
+                            />
+                        </div>
 
-            {!loading && products.length === 0 && (
-                <p>No hay productos.</p>
-            )}
+                        <div className="grid grid-cols-2 gap-3">
+                            <div>
+                                <label className="mb-1 block text-sm font-semibold text-gray-700">
+                                    Precio
+                                </label>
 
-            <ul>
-                {products.map((product) => (
-                    <li key={product.id}>
-                        <strong>
-                            {product.name}
-                        </strong>
+                                <input
+                                    type="number"
+                                    value={price}
+                                    onChange={(event) =>
+                                        setPrice(
+                                            event.target.value
+                                        )
+                                    }
+                                    required
+                                    min="0"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-[var(--pacific-cyan)]"
+                                />
+                            </div>
 
-                        {" - $"}
+                            <div>
+                                <label className="mb-1 block text-sm font-semibold text-gray-700">
+                                    Stock
+                                </label>
 
-                        {product.price}
+                                <input
+                                    type="number"
+                                    value={stock}
+                                    onChange={(event) =>
+                                        setStock(
+                                            event.target.value
+                                        )
+                                    }
+                                    required
+                                    min="0"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-[var(--pacific-cyan)]"
+                                />
+                            </div>
+                        </div>
 
-                        {" - Stock: "}
+                        <div>
+                            <label className="mb-1 block text-sm font-semibold text-gray-700">
+                                Categoría
+                            </label>
 
-                        {product.stock}
+                            <input
+                                type="text"
+                                value={categoryId}
+                                onChange={(event) =>
+                                    setCategoryId(
+                                        event.target.value
+                                    )
+                                }
+                                required
+                                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-[var(--pacific-cyan)]"
+                            />
+                        </div>
+
+                        {/* IMAGEN */}
+
+                        <div>
+                            <label className="mb-1 block text-sm font-semibold text-gray-700">
+                                Imagen
+                            </label>
+
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(event) =>
+                                    setImageFile(
+                                        event.target.files?.[0] ??
+                                        null
+                                    )
+                                }
+                                className="block w-full rounded-lg border border-gray-300 p-2 text-sm"
+                            />
+
+                            {imageFile && (
+                                <p className="mt-2 text-sm text-gray-500">
+                                    Archivo: {imageFile.name}
+                                </p>
+                            )}
+
+                            {!imageFile &&
+                                currentImageUrl && (
+                                    <img
+                                        src={currentImageUrl}
+                                        alt="Imagen actual"
+                                        className="mt-3 h-32 w-full rounded-xl object-cover"
+                                    />
+                                )}
+                        </div>
+
+                        {error && (
+                            <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
+                                {error}
+                            </p>
+                        )}
 
                         <button
-                            onClick={() =>
-                                handleEdit(product)
-                            }
+                            type="submit"
+                            className="w-full rounded-lg bg-[var(--charcoal-blue)] px-4 py-3 font-bold text-white hover:bg-[var(--dark-slate-grey)]"
                         >
-                            Editar
+                            {editingId
+                                ? "Guardar cambios"
+                                : "Crear producto"}
                         </button>
 
-                        <button
-                            onClick={() =>
-                                handleDelete(product.id)
-                            }
-                        >
-                            Eliminar
-                        </button>
-                    </li>
-                ))}
-            </ul>
+                        {editingId && (
+                            <button
+                                type="button"
+                                onClick={resetForm}
+                                className="w-full rounded-lg border border-gray-300 px-4 py-3 font-semibold text-gray-600"
+                            >
+                                Cancelar edición
+                            </button>
+                        )}
+                    </form>
+                </section>
+
+                {/* PRODUCTOS */}
+
+                <section>
+                    <div className="mb-6">
+                        <h2 className="text-2xl font-black text-[var(--charcoal-blue)]">
+                            Productos
+                        </h2>
+
+                        <p className="mt-1 text-gray-500">
+                            Administrá el catálogo de la tienda.
+                        </p>
+                    </div>
+
+                    {loading && (
+                        <div className="rounded-xl bg-white p-8 text-center text-gray-500 shadow-sm">
+                            Cargando productos...
+                        </div>
+                    )}
+
+                    {!loading &&
+                        products.length === 0 && (
+                            <div className="rounded-xl bg-white p-8 text-center text-gray-500 shadow-sm">
+                                No hay productos cargados.
+                            </div>
+                        )}
+
+                    <div className="grid gap-5 md:grid-cols-2">
+                        {products.map((product) => (
+                            <article
+                                key={product.id}
+                                className="overflow-hidden rounded-2xl bg-white shadow-sm"
+                            >
+                                <div className="h-44 bg-gray-100">
+                                    {product.imageUrl ? (
+                                        <img
+                                            src={product.imageUrl}
+                                            alt={product.name}
+                                            className="h-full w-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="flex h-full items-center justify-center text-gray-400">
+                                            Sin imagen
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="p-5">
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div>
+                                            <span className="text-xs font-bold uppercase text-[var(--pacific-cyan)]">
+                                                {product.categoryId}
+                                            </span>
+
+                                            <h3 className="mt-1 text-lg font-black text-[var(--charcoal-blue)]">
+                                                {product.name}
+                                            </h3>
+                                        </div>
+
+                                        <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
+                                            Stock {product.stock}
+                                        </span>
+                                    </div>
+
+                                    <p className="mt-3 line-clamp-2 text-sm text-gray-500">
+                                        {product.description}
+                                    </p>
+
+                                    <p className="mt-4 text-2xl font-black text-[var(--charcoal-blue)]">
+                                        $
+                                        {product.price.toLocaleString(
+                                            "es-AR"
+                                        )}
+                                    </p>
+
+                                    <div className="mt-5 flex gap-3">
+                                        <button
+                                            onClick={() =>
+                                                handleEdit(product)
+                                            }
+                                            className="flex-1 rounded-lg border border-[var(--pacific-cyan)] px-4 py-2 font-bold text-[var(--pacific-cyan)] hover:bg-gray-50"
+                                        >
+                                            Editar
+                                        </button>
+
+                                        <button
+                                            onClick={() =>
+                                                handleDelete(
+                                                    product.id
+                                                )
+                                            }
+                                            className="flex-1 rounded-lg border border-red-200 px-4 py-2 font-bold text-red-600 hover:bg-red-50"
+                                        >
+                                            Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                </section>
+            </div>
         </main>
     );
 }

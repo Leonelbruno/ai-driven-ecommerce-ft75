@@ -12,12 +12,12 @@ export function ProductCard({
 }: ProductCardProps) {
     return (
         <article className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-            <div className="flex h-52 items-center justify-center bg-gray-100">
+            <div className="flex h-52 items-center justify-center bg-white">
                 {product.imageUrl ? (
                     <img
                         src={product.imageUrl}
                         alt={product.name}
-                        className="h-full w-full object-cover"
+                        className="h-full w-full object-contain p-4"
                     />
                 ) : (
                     <span className="text-sm text-gray-400">

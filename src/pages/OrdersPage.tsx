@@ -103,18 +103,22 @@ export function OrdersPage() {
                     )}
 
                 <section className="mt-8 space-y-5">
-                    {orders.map((order) => (
+                    {orders.map((order, index) => (
                         <article
                             key={order.id}
                             className="rounded-2xl bg-white p-6 shadow-sm"
                         >
                             <div className="flex flex-col gap-3 border-b border-gray-100 pb-4 sm:flex-row sm:items-center sm:justify-between">
                                 <div>
-                                    <p className="text-sm text-gray-500">
-                                        Orden
+                                    <h2 className="text-xl font-black text-[var(--charcoal-blue)]">
+                                        Pedido {orders.length - index}
+                                    </h2>
+
+                                    <p className="mt-2 text-sm text-gray-500">
+                                        Código de pedido
                                     </p>
 
-                                    <p className="break-all font-semibold text-[var(--charcoal-blue)]">
+                                    <p className="break-all text-sm font-medium text-gray-600">
                                         {order.id}
                                     </p>
                                 </div>

@@ -408,7 +408,7 @@ export function AdminPage() {
                                         <img
                                             src={product.imageUrl}
                                             alt={product.name}
-                                            className="h-full w-full object-cover"
+                                            className="h-full w-full object-contain p-3"
                                         />
                                     ) : (
                                         <div className="flex h-full items-center justify-center text-gray-400">

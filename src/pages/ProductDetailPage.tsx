@@ -100,7 +100,7 @@ export function ProductDetailPage() {
                             <img
                                 src={product.imageUrl}
                                 alt={product.name}
-                                className="h-full max-h-[520px] w-full object-cover"
+                                className="h-full max-h-[520px] w-full object-contain p-6"
                             />
                         ) : (
                             <span className="text-gray-400">

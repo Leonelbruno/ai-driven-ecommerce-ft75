@@ -1,15 +1,8 @@
 import { useEffect, useState, type FormEvent } from "react";
-
 import { Link } from "react-router";
-
 import type { Product } from "../types/Product";
-
-import {
-    createProduct,
-    deleteProduct,
-    getProducts,
-    updateProduct,
-} from "../services/productService";
+import { createProduct, deleteProduct, getProducts, updateProduct } from "../services/productService";
+import { uploadProductImage } from "../services/imageService";
 
 export function AdminPage() {
     const [products, setProducts] =
@@ -33,6 +26,17 @@ export function AdminPage() {
 
     const [error, setError] =
         useState("");
+
+    const [imageFile, setImageFile] =
+        useState<File | null>(null);
+
+    const [
+        currentImageUrl,
+        setCurrentImageUrl,
+    ] =
+        useState<string | undefined>(
+            undefined
+        );
 
     const loadProducts = async () => {
         try {
@@ -61,6 +65,8 @@ export function AdminPage() {
         setPrice("");
         setCategoryId("");
         setStock("");
+        setImageFile(null);
+        setCurrentImageUrl(undefined);
     };
 
     const handleSubmit = async (
@@ -68,16 +74,28 @@ export function AdminPage() {
     ) => {
         event.preventDefault();
 
-        const productData = {
-            name,
-            description,
-            price: Number(price),
-            categoryId,
-            stock: Number(stock),
-        };
-
         try {
             setError("");
+
+            let imageUrl = currentImageUrl;
+
+            if (imageFile) {
+                imageUrl = await uploadProductImage(
+                    imageFile
+                );
+            }
+
+            const productData = {
+                name,
+                description,
+                price: Number(price),
+                categoryId,
+                stock: Number(stock),
+
+                ...(imageUrl
+                    ? { imageUrl }
+                    : {}),
+            };
 
             if (editingId) {
                 await updateProduct(
@@ -85,7 +103,9 @@ export function AdminPage() {
                     productData
                 );
             } else {
-                await createProduct(productData);
+                await createProduct(
+                    productData
+                );
             }
 
             resetForm();
@@ -112,6 +132,10 @@ export function AdminPage() {
         setPrice(String(product.price));
         setCategoryId(product.categoryId);
         setStock(String(product.stock));
+        setCurrentImageUrl(
+            product.imageUrl
+        );
+        setImageFile(null);
     };
 
     const handleDelete = async (
@@ -232,7 +256,41 @@ export function AdminPage() {
                 </div>
 
                 {error && <p>{error}</p>}
+                <div>
+                    <label>
+                        Imagen
 
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(event) =>
+                                setImageFile(
+                                    event.target.files?.[0] ??
+                                    null
+                                )
+                            }
+                        />
+                    </label>
+                </div>
+
+                {imageFile && (
+                    <p>
+                        Imagen seleccionada:{" "}
+                        {imageFile.name}
+                    </p>
+                )}
+
+                {currentImageUrl && (
+                    <div>
+                        <p>Imagen actual:</p>
+
+                        <img
+                            src={currentImageUrl}
+                            alt="Producto actual"
+                            width="150"
+                        />
+                    </div>
+                )}
                 <button type="submit">
                     {editingId
                         ? "Guardar cambios"
